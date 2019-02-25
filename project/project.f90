@@ -1,3 +1,6 @@
+
+!constans set
+!----------------------------------------------------------------------
 module constants
 	implicit none
 	integer,parameter :: dp = selected_real_kind(8)
@@ -13,27 +16,58 @@ module constants
 	real(dp),parameter :: pi=3.1415926        
 
 	real(dp) :: k
-	k = 2*pi/a
+	!k = 2*pi/a
 end module
-!--------------------------------------------------------------------
+!-------------------------------------------------------------------
+
+
+
+
+!operation with array
+!-----------------------------------------------------------------------------------------------
 module array
-	real,external :: vec
+	!real,external :: vec
 	integer,parameter :: dp = selected_real_kind(8)
 	contains
-	function vec(init,ed,inter)
+
+!create a array with given initial value, end value and interval
+!---------------------------------------------------------------------
+	function vec(init,ed,inter) result(arr)
 		implicit none
+		integer :: i
 		real(dp) :: init,ed,inter
-		real(dp) :: num = (ed-init)/inter+1
-		real(dp) :: 
-
-
-
-
+		integer :: num
+		real(dp) :: arr(int((ed-init)/inter+1))
+		num = (ed-init)/inter+1
+		do i=1,num
+			arr(i) = init+(i-1)*inter
+		end do
+	end function
+!-------------------------------------------------------------------------
 
 end module array
+!---------------------------------------------------------------------------------------------
+
+
+
+module calc
+	use constants
+
+
+	real function spe(k,omega)
+		real(dp) :: k
+		real(dp) :: omega
+		real(dp) :: Ek
+		!Ek = J*S*z*
+		spe = 2*hbar*Sz*delta/((hbar*omega-Ek)**2+delta**2)
+	end function spe
+
+
+end module calc
 
 program main
-	implicit none
 	use constants
+	use array
+	!implicit none
 
 end
