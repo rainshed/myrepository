@@ -14,9 +14,7 @@ module constants
 	real(dp),parameter :: E0=0      !energy of ground state
 	real(dp),parameter :: J=1       !exchange constant 
 	real(dp),parameter :: pi=3.1415926        
-
-	real(dp) :: k
-	!k = 2*pi/a
+	real(dp) :: k = 2*pi/a
 end module
 !-------------------------------------------------------------------
 
@@ -52,22 +50,25 @@ end module array
 
 module calc
 	use constants
-
-
-	real function spe(k,omega)
-		real(dp) :: k
+contains
+!given k and omega,calculate the spectrum
+!--------------------------------------------------------------------------
+	real function spe(k1,omega)
+		real(dp) :: k1
 		real(dp) :: omega
 		real(dp) :: Ek
-		!Ek = J*S*z*
-		spe = 2*hbar*Sz*delta/((hbar*omega-Ek)**2+delta**2)
+		Ek = J*S*z*sqrt(1-(4*cos(k1*a)/z)**2) !this formula is different with different crystal structure
+		spe = 2d0*hbar*Sz*delta/((hbar*omega-Ek)**2+delta**2)
 	end function spe
+!---------------------------------------------------------------------------
 
 
 end module calc
-
+!------------------------------------------------------------------------------------------------
 program main
 	use constants
 	use array
-	!implicit none
-
+	use calc
+	implicit none
+	
 end
