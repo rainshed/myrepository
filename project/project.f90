@@ -14,7 +14,7 @@ module constants
 	real(dp),parameter :: E0=0      !energy of ground state
 	real(dp),parameter :: J=1       !exchange constant 
 	real(dp),parameter :: pi=3.1415926        
-	real(dp) :: k = 2*pi/a
+	real(dp),parameter :: k = 2*pi/a
 end module
 !-------------------------------------------------------------------
 
@@ -25,7 +25,8 @@ end module
 !-----------------------------------------------------------------------------------------------
 module array
 	!real,external :: vec
-	integer,parameter :: dp = selected_real_kind(8)
+	!integer,parameter :: dp = selected_real_kind(8)
+	use constants
 	contains
 
 !create a array with given initial value, end value and interval
@@ -57,7 +58,7 @@ contains
 		real(dp) :: k1
 		real(dp) :: omega
 		real(dp) :: Ek
-		Ek = J*S*z*sqrt(1-(4*cos(k1*a)/z)**2) !this formula is different with different crystal structure
+		Ek = J*S*z*sqrt(1-(4*cos(k1*a)/z)**2) !this formula is dependent on crystal structure
 		spe = 2d0*hbar*Sz*delta/((hbar*omega-Ek)**2+delta**2)
 	end function spe
 !---------------------------------------------------------------------------
@@ -66,9 +67,21 @@ contains
 end module calc
 !------------------------------------------------------------------------------------------------
 program main
-	use constants
 	use array
 	use calc
 	implicit none
-	
+	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
+	real(dp),parameter :: o_max = 50d0, o_min=0d0  !o_max is max value of omega at omega axial
+	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
+	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
+	real(dp) :: k1(k_num),omega(o_num)
+	real(dp) :: spec(k_num,o_num)
+	integer :: knum, onum
+	k1 = vec(-k/2d0,k/2d0,k_inter)
+	omega = vec(o_min,o_max,o_inter)
+	do knum = 1,size(k1)
+		do onum = 1,size(omega)
+		spec(knum,onum) = spe(k1(knum),omega(onum))
+		end do
+	end do
 end
