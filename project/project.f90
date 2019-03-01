@@ -5,8 +5,8 @@ module constants
 	implicit none
 	integer,parameter :: dp = selected_real_kind(8)
 	real(dp),parameter :: a=1       !Lattice constant
-	real(dp),parameter :: Sz=0.5d0  !anverage z component of spin
-	real(dp),parameter :: S=0.5d0   !spin of system
+	real(dp),parameter :: Sz=1  !anverage z component of spin
+	real(dp),parameter :: S=1   !spin of system
 	real(dp),parameter :: hbar=1    !Plank constant
 	real(dp),parameter :: N=1       !Number of atoms
 	real(dp),parameter :: delta=1   !self energy
@@ -71,7 +71,7 @@ program main
 	use calc
 	implicit none
 	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
-	real(dp),parameter :: o_max = 50d0, o_min=0d0  !o_max is max value of omega at omega axial
+	real(dp),parameter :: o_max = 8d0, o_min=0d0  !o_max is max value of omega at omega axial
 	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
 	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
 	real(dp) :: k1(k_num),omega(o_num)
@@ -79,9 +79,11 @@ program main
 	integer :: knum, onum
 	k1 = vec(-k/2d0,k/2d0,k_inter)
 	omega = vec(o_min,o_max,o_inter)
+	open(unit=10,file='spe.dat')
 	do knum = 1,size(k1)
 		do onum = 1,size(omega)
-		spec(knum,onum) = spe(k1(knum),omega(onum))
+			spec(knum,onum) = spe(k1(knum),omega(onum))
+			 write(10,*) k1(knum),omega(onum),spec(knum,onum)
 		end do
 	end do
-end
+end             
