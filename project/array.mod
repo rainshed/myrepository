@@ -1,5 +1,5 @@
-GFORTRAN module version '10' created from project.f90
-MD5:b668da8599d9986de7840164b92ae1b8 -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '10' created from btest.f90
+MD5:19df234e19c81fffc592e6144ce740f0 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -43,24 +43,24 @@ REAL 8 0 0 0 REAL ()) 0 '0.10000000000000@1') () 0 () () () 0 0)
 11 'j' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
 REAL ()) 0 '0.10000000000000@1') () 0 () () () 0 0)
-12 'k' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
-REAL ()) 0 '0.6487ed00000000@1') () 0 () () () 0 0)
-13 'n' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
-REAL ()) 0 '0.10000000000000@1') () 0 () () () 0 0)
-14 'pi' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+12 'pi' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
 REAL ()) 0 '0.3243f680000000@1') () 0 () () () 0 0)
-15 's' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+13 's' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
 REAL ()) 0 '0.10000000000000@1') () 0 () () () 0 0)
-16 'selected_real_kind' '(intrinsic)' '' 1 ((PROCEDURE UNKNOWN-INTENT
+14 'selected_real_kind' '(intrinsic)' '' 1 ((PROCEDURE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 FUNCTION) (REAL 4 0 0 0 REAL ()) 0 0 ()
-() 16 () () () 0 0)
-17 'sz' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+() 14 () () () 0 0)
+15 'sz' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
 REAL ()) 0 '0.10000000000000@1') () 0 () () () 0 0)
+16 'sz1' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (
+REAL 8 0 0 0 REAL ()) 0 '0.10000000000000@1') () 0 () () () 0 0)
+17 'sz2' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (
+REAL 8 0 0 0 REAL ()) 0 '-0.10000000000000@1') () 0 () () () 0 0)
 18 'vec' 'array' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 DIMENSION FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ())
 19 0 (20 21 22) (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1')
@@ -72,7 +72,7 @@ REAL ()) 0 21 ()) (VARIABLE (REAL 8 0 0 0 REAL ()) 0 20 ()))) (VARIABLE
 '0.10000000000000@1')))) '_gfortran_idint' 0 'idint')) 24 () () () 0 0)
 25 'z' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
-REAL ()) 0 '0.60000000000000@1') () 0 () () () 0 0)
+REAL ()) 0 '0.40000000000000@1') () 0 () () () 0 0)
 20 'init' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 21 'ed' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
@@ -94,6 +94,6 @@ REAL ()) 0 21 ()) (VARIABLE (REAL 8 0 0 0 REAL ()) 0 20 ()))) (VARIABLE
 )
 
 ('__convert_i4_r8' 0 2 '__convert_r4_r8' 0 3 'a' 0 4 'array' 0 5
-'constants' 0 6 'delta' 0 7 'dp' 0 8 'e0' 0 9 'hbar' 0 10 'j' 0 11 'k' 0
-12 'n' 0 13 'pi' 0 14 's' 0 15 'selected_real_kind' 0 16 'sz' 0 17 'vec'
-0 18 'z' 0 25)
+'constants' 0 6 'delta' 0 7 'dp' 0 8 'e0' 0 9 'hbar' 0 10 'j' 0 11 'pi'
+0 12 's' 0 13 'selected_real_kind' 0 14 'sz' 0 15 'sz1' 0 16 'sz2' 0 17
+'vec' 0 18 'z' 0 25)
