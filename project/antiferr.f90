@@ -9,7 +9,7 @@ module constants
 	real(dp),parameter :: S=1   !spin of system
 	real(dp),parameter :: hbar=1    !Plank constant
 	real(dp),parameter :: N=1       !Number of atoms
-	real(dp),parameter :: delta=0.1   !self energy
+	real(dp),parameter :: delta=0.01   !self energy
 	real(dp),parameter :: z=4       !coordination number
 	real(dp),parameter :: E0=0      !energy of ground state
 	real(dp),parameter :: J=1       !exchange constant 
@@ -117,29 +117,41 @@ contains
 end module calc
 !------------------------------------------------------------------------------------------------
 program main
-!	use array
-!	use calc
-!	implicit none
-!	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
-!	real(dp),parameter :: o_max = 8d0, o_min=0d0  !o_max is max value of omega at omega axial
-!	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
-!	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
-!	real(dp) :: k1(k_num),omega(o_num)
-!	real(dp) :: spec(k_num,o_num)
-!	integer :: knum, onum
-!	k1 = vec(-k/2d0,k/2d0,k_inter)
-!	omega = vec(o_min,o_max,o_inter)
-!	open(unit=10,file='spe.dat')
-!	do knum = 1,size(k1)
-!		do onum = 1,size(omega)
-!			spec(knum,onum) = spe(k1(knum),omega(onum))
-!			 write(10,*) k1(knum),omega(onum),spec(knum,onum)
-!		end do
-!	end do
-
+	use array
 	use calc
-	complex(8) :: test(2,2) 
-	test = green_fun(1d0,1d0,(1d0,0d0))
+	implicit none
+	!------------------------------------------------------------------------------------------------
+	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
+	real(dp),parameter :: o_max = 8d0, o_min=0d0  !o_max is max value of omega at omega axial
+	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
+	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
+	real(dp) :: k1(k_num),omega(o_num)
+	real(dp) :: spec1(k_num,o_num),spec2(k_num,o_num)
+	integer :: knum, onum
+	!---------------------------------------------------------------------------------------------------
+	!for spec
+	complex(8) :: green(2,2),c_omega(o_num)
+
+
+	!------------------------------------------------------------------------------------------------------
+	k1 = vec(-k/2d0,k/2d0,k_inter)
+	omega = vec(o_min,o_max,o_inter)
+	open(unit=10,file='antiferr1.dat')
+	open(unit=11,file='antiferr2.dat')
+	do knum = 1,size(k1)
+		do onum = 1,size(omega)
+			c_omega(onum) = complex(omega(onum),0)
+			green = -green_fun(k1(knum),0d0,c_omega(onum))
+			spec1(knum,onum) = aimag(green(1,1))
+			spec2(knum,onum) = aimag(green(2,2))
+			write(10,*) k1(knum),omega(onum),spec1(knum,onum)
+			write(11,*) k1(knum),omega(onum),spec2(knum,onum)
+		end do
+	end do
+
+!	use calc
+!	complex(8) :: test(2,2) 
+!	test = green_fun(1d0,1d0,(1d0,0d0))
 
 end             
 
