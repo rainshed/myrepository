@@ -159,16 +159,17 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 	integer :: m,l,h,knum 
 	integer,parameter :: k_num=300
 	real(8) :: k1(k_num) 
-	Sz1_old=Sz1_init
-	Sz2_old=Sz2_init
-	Sz1_new=0
-	Sz2_new=0
+	Sz1_old=0
+	Sz2_old=0
+	Sz1_new=Sz1_init
+	Sz2_new=Sz2_init
 	k1 = vecn(-k/2d0,k/2d0,k_num)
 	
 	!compute the Sz1 and Sz2 by iteration
 	do while(abs(Sz1_old-Sz1_new) > 0.00001 .and. abs(Sz2_old-Sz2_new) > 0.00001)
-		
 
+		Sz1_old = Sz1_new
+		Sz2_old = Sz2_new
 		
 		Phi = 0
 		do l = 1,2
@@ -199,13 +200,11 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 				end do
 			end do
 			Phi(l) = Phi(l)/k_num
-			write(*,*) Phi(l)
+		!	write(*,*) Phi(l)
 		end do
 		Sz1_new = 1/(2*(2*Phi(1)+1))
 		Sz2_new = 1/(2*(2*Phi(2)+1))
 
-		Sz1_old = Sz1_new
-		Sz2_old = Sz2_new
 
 		write(*,*) Sz1_new,Sz2_new
 		
