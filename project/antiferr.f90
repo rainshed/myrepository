@@ -13,9 +13,10 @@ module constants
 	real(dp),parameter :: z=4       !coordination number
 	real(dp),parameter :: E0=0      !energy of ground state
 	real(dp),parameter :: J=1       !exchange constant 
+	real(dp),parameter :: beta =10   !temperature 
 	real(dp),parameter :: pi=3.1415926        
-	real(dp),parameter :: k = 2*pi/a
-	real(dp),parameter :: Sz1=1,Sz2=-1
+	real(dp),parameter :: k = 2d0*pi/a
+	real(dp) :: Sz1,Sz2
 	!-----------------------------------------------------------------------
 end module
 !-------------------------------------------------------------------
@@ -23,31 +24,6 @@ end module
 
 
 
-!operation with array
-!-----------------------------------------------------------------------------------------------
-module array
-	!real,external :: vec
-	!integer,parameter :: dp = selected_real_kind(8)
-	use constants
-	contains
-
-!create a array with given initial value, end value and interval
-!---------------------------------------------------------------------
-	function vec(init,ed,inter) result(arr)
-		implicit none
-		integer :: i
-		real(dp) :: init,ed,inter
-		integer :: num
-		real(dp) :: arr(int((ed-init)/inter+1))
-		num = (ed-init)/inter+1
-		do i=1,num
-			arr(i) = init+(i-1)*inter
-		end do
-	end function
-!-------------------------------------------------------------------------
-
-end module array
-!---------------------------------------------------------------------------------------------
 
 
 
@@ -117,37 +93,40 @@ contains
 end module calc
 !------------------------------------------------------------------------------------------------
 program main
+	use constants
 	use array
 	use calc
 	implicit none
-	!------------------------------------------------------------------------------------------------
-	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
-	real(dp),parameter :: o_max = 8d0, o_min=0d0  !o_max is max value of omega at omega axial
-	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
-	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
-	real(dp) :: k1(k_num),omega(o_num)
-	real(dp) :: spec1(k_num,o_num),spec2(k_num,o_num)
-	integer :: knum, onum
-	!---------------------------------------------------------------------------------------------------
-	!for spec
-	complex(8) :: green(2,2),c_omega(o_num)
-
-
-	!------------------------------------------------------------------------------------------------------
-	k1 = vec(-k/2d0,k/2d0,k_inter)
-	omega = vec(o_min,o_max,o_inter)
-	open(unit=10,file='antiferr1.dat')
-	open(unit=11,file='antiferr2.dat')
-	do knum = 1,size(k1)
-		do onum = 1,size(omega)
-			c_omega(onum) = complex(omega(onum),0)
-			green = -green_fun(k1(knum),0d0,c_omega(onum))
-			spec1(knum,onum) = aimag(green(1,1))
-			spec2(knum,onum) = aimag(green(2,2))
-			write(10,*) k1(knum),omega(onum),spec1(knum,onum)
-			write(11,*) k1(knum),omega(onum),spec2(knum,onum)
-		end do
-	end do
+	call iteration(0.1d0,-0.1d0,Sz1,Sz2)
+!	write(*,*) Sz1,Sz2
+!	!------------------------------------------------------------------------------------------------
+!	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
+!	real(dp),parameter :: o_max = 8d0, o_min=0d0  !o_max is max value of omega at omega axial
+!	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
+!	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
+!	real(dp) :: k1(k_num),omega(o_num)
+!	real(dp) :: spec1(k_num,o_num),spec2(k_num,o_num)
+!	integer :: knum, onum
+!	!---------------------------------------------------------------------------------------------------
+!	!for spec
+!	complex(8) :: green(2,2),c_omega(o_num)
+!
+!
+!	!------------------------------------------------------------------------------------------------------
+!	k1 = vec(-k/2d0,k/2d0,k_inter)
+!	omega = vec(o_min,o_max,o_inter)
+!	open(unit=10,file='antiferr1.dat')
+!	open(unit=11,file='antiferr2.dat')
+!	do knum = 1,size(k1)
+!		do onum = 1,size(omega)
+!			c_omega(onum) = complex(omega(onum),0)
+!			green = -green_fun(k1(knum),0d0,c_omega(onum))
+!			spec1(knum,onum) = aimag(green(1,1))
+!			spec2(knum,onum) = aimag(green(2,2))
+!			write(10,*) k1(knum),omega(onum),spec1(knum,onum)
+!			write(11,*) k1(knum),omega(onum),spec2(knum,onum)
+!		end do
+!	end do
 
 !	use calc
 !	complex(8) :: test(2,2) 
@@ -155,5 +134,83 @@ program main
 
 end             
 
+subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
+	use array
+	use constants
+	implicit none
+
+	!-------------------------------------------------------------
+	! for dgeev
+	integer,parameter :: order = 2
+	complex(8) :: P(order,order),Eigenvalue(order),VL(order,order),&
+		&VR(order,order), Work(68)
+	integer :: Lwork = 68,info
+	real(8) :: Rwork(2*order)
+
+	!-------------------------------------------------------------
+	real(8),intent(in) :: Sz1_init,Sz2_init
+	real(8),intent(out) :: Sz1_new,Sz2_new
+	real(8) :: Sz1_old,Sz2_old
+
+	real(8) :: Jk,J0,kx,ky
+	complex(8) :: omega,green(2,2),c_delta,Phi(2)!Phi is a summation which is used to calculate Sz
+
+	!k_num is number of point of k, knum is used to cycle
+	integer :: m,l,h,knum 
+	integer,parameter :: k_num=300
+	real(8) :: k1(k_num) 
+	Sz1_old=Sz1_init
+	Sz2_old=Sz2_init
+	Sz1_new=0
+	Sz2_new=0
+	k1 = vecn(-k/2d0,k/2d0,k_num)
+	
+	!compute the Sz1 and Sz2 by iteration
+	do while(abs(Sz1_old-Sz1_new) > 0.00001 .and. abs(Sz2_old-Sz2_new) > 0.00001)
+		
+
+		
+		Phi = 0
+		do l = 1,2
+			do knum = 1,k_num
+				do m = 1,2
+				!write(*,*) k_num
+				Jk = J*(2*cos(k1(knum)*a))
+				J0 = z*J
+				!write(*,*) k1(k_num) 
+				!write(*,*) cos(k1(knum)*a) 
+				!write(*,*) Jk
+				P(1,1) = complex(-J0*Sz2_old,0)
+				P(1,2) = complex(Jk*Sz1_old,0)
+				P(2,1) = complex(Jk*Sz2_old,0)
+				P(2,2) = complex(-J0*Sz1_old,0)
+				!write(*,*) P
+
+				call zgeev('V','V',order,P,order,Eigenvalue,VL,order,VR,order,WORK,LWORK,RWORK,INFO)
+				!VR is eigenvector matrix,VL is the inverse of VR
+				if (info .ne. 0) then
+					write(*,*) 'dgeev error'
+				end if
+				!write(*,*) VR
+
+				Phi(l) = Phi(l)+2*VR(l,m)*VL(m,l)/(exp(beta*Eigenvalue(m))-1)	
+				!write(*,*) Phi(l)
+				!write(*,*) (exp(beta*Eigenvalue(m))-1)
+				end do
+			end do
+			Phi(l) = Phi(l)/k_num
+			write(*,*) Phi(l)
+		end do
+		Sz1_new = 1/(2*(2*Phi(1)+1))
+		Sz2_new = 1/(2*(2*Phi(2)+1))
+
+		Sz1_old = Sz1_new
+		Sz2_old = Sz2_new
+
+		write(*,*) Sz1_new,Sz2_new
+		
+	end do
+end subroutine	
+	
 
 	
