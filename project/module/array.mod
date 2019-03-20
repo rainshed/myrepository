@@ -1,4 +1,4 @@
-GFORTRAN module version '10' created from module/array_mod.f90
+GFORTRAN module version '10' created from array_mod.f90
 MD5:29339a79867713172dbb888c081a218c -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()

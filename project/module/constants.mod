@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from antiferr.f90
-MD5:35a3b9732d62b05ffd7fbbd59d160a6d -- If you edit this, you'll get what you deserve.
+MD5:def6d169e01fbc3331e38a83ad7f49c8 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -25,7 +25,7 @@ IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
 REAL ()) 0 '0.10000000000000@1') () 0 () () () 0 0)
 5 'beta' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (
-REAL 8 0 0 0 REAL ()) 0 '0.00000000000000@0') () 0 () () () 0 0)
+REAL 8 0 0 0 REAL ()) 0 '0.a0000000000000@1') () 0 () () () 0 0)
 6 'constants' 'constants' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)

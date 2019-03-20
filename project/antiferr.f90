@@ -13,7 +13,7 @@ module constants
 	real(dp),parameter :: z=4       !coordination number
 	real(dp),parameter :: E0=0      !energy of ground state
 	real(dp),parameter :: J=1       !exchange constant 
-	real(dp),parameter :: beta =10   !temperature 
+	real(dp),parameter :: beta = 1  !temperature 
 	real(dp),parameter :: pi=3.1415926        
 	real(dp),parameter :: k = 2d0*pi/a
 	real(dp) :: Sz1,Sz2
@@ -97,7 +97,8 @@ program main
 	use array
 	use calc
 	implicit none
-	call iteration(0.1d0,-0.1d0,Sz1,Sz2)
+	call calc_spin(-0.4d0,0.4d0,Sz1,Sz2)
+!	call iteration(0.5d0,-0.5d0,Sz1,Sz2)
 !	write(*,*) Sz1,Sz2
 !	!------------------------------------------------------------------------------------------------
 !	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
@@ -143,7 +144,7 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 	! for dgeev
 	integer,parameter :: order = 2
 	complex(8) :: P(order,order),Eigenvalue(order),VL(order,order),&
-		&VR(order,order), Work(68)
+		&VR(order,order), Work(68),inv(order,order)
 	integer :: Lwork = 68,info
 	real(8) :: Rwork(2*order)
 
@@ -157,7 +158,7 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 
 	!k_num is number of point of k, knum is used to cycle
 	integer :: m,l,h,knum 
-	integer,parameter :: k_num=300
+	integer,parameter :: k_num=500
 	real(8) :: k1(k_num) 
 	Sz1_old=0
 	Sz2_old=0
@@ -176,40 +177,171 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 			do knum = 1,k_num
 				do m = 1,2
 				!write(*,*) k_num
-				Jk = J*(2*cos(k1(knum)*a))
+				Jk = J*(2*cos(k1(knum)*a))  !There only calculate one dimension case
 				J0 = z*J
 				!write(*,*) k1(k_num) 
 				!write(*,*) cos(k1(knum)*a) 
 				!write(*,*) Jk
-				P(1,1) = complex(-J0*Sz2_old,0)
+				P(1,1) = complex(J0*Sz1_old,0)
 				P(1,2) = complex(Jk*Sz1_old,0)
-				P(2,1) = complex(Jk*Sz2_old,0)
+				P(2,1) = complex(-Jk*Sz1_old,0)
 				P(2,2) = complex(-J0*Sz1_old,0)
 				!write(*,*) P
 
 				call zgeev('V','V',order,P,order,Eigenvalue,VL,order,VR,order,WORK,LWORK,RWORK,INFO)
 				!VR is eigenvector matrix,VL is the inverse of VR
+			!	write(*,*) Eigenvalue
 				if (info .ne. 0) then
 					write(*,*) 'dgeev error'
 				end if
 				!write(*,*) VR
+				!write(*,*) VR(1,1),VR(2,2)
+				!write(*,*) Jk*Sz1/(sqrt((Jk*Sz1_old)**2+(sqrt(J0**2-Jk**2)*Sz1_old-J0*Sz1_old)**2))
+				inv = inverse(VR,2)
 
-				Phi(l) = Phi(l)+2*VR(l,m)*VL(m,l)/(exp(beta*Eigenvalue(m))-1)	
-				!write(*,*) Phi(l)
+				Phi(l) = Phi(l)+2*VR(l,m)*inv(m,l)/(exp(beta*Eigenvalue(m))-1)	
+				write(*,*)VR(l,m)*inv(m,l)/(exp(beta*Eigenvalue(m))-1)
+			!	write(*,*) Phi(l)
+			!	write(*,*) exp(beta*Eigenvalue(m))-1
 				!write(*,*) (exp(beta*Eigenvalue(m))-1)
 				end do
+				
+		!	write(*,*) 'eigenvalue',Eigenvalue
+		!	write(*,*) sqrt(J0**2-Jk**2)*Sz1_new
 			end do
 			Phi(l) = Phi(l)/k_num
-		!	write(*,*) Phi(l)
+	!		write(*,*) Phi(l)
 		end do
+		write(*,*) Phi(1)+Phi(2)
 		Sz1_new = 1/(2*(2*Phi(1)+1))
 		Sz2_new = 1/(2*(2*Phi(2)+1))
-
 
 		write(*,*) Sz1_new,Sz2_new
 		
 	end do
 end subroutine	
 	
-
+subroutine calc_spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
+	use array
+	use constants
+	implicit none
 	
+	!-----input and output-------
+	real(8),intent(in) :: Sz1_init,Sz2_init
+	real(8),intent(out) :: Sz1_new,Sz2_new
+	!----------------------------
+
+	!--------local var-----------
+	integer,parameter :: order = 2
+	complex(8) :: P(2,2),Phi(order)
+	real(8) :: J0 = z*J, Jk, Sz1_old, Sz2_old
+	integer,parameter :: k_num = 300
+	integer :: knum,l,m
+	real(8) :: k1(k_num) 
+
+	!-----------------------------------------
+
+	!--------for lapack-----------------------
+	integer, parameter :: Lwork = 100
+	real(8) :: Rwork(2*order)
+	complex(8) ::Eigenvalue(order)
+	complex(8) :: VL(order,order),VR(order,order),Work(Lwork),inv(order,order)
+	integer :: info
+	!--------------------------------------------------------
+	Sz1_new = Sz1_init
+	Sz2_new = Sz2_init
+	Sz1_old = 0
+	Sz2_old = 0
+
+	do  while(abs(Sz1_old-Sz1_new)>0.0001 .or. abs(Sz2_old-Sz2_new)>0.0001)
+
+	Sz1_old = Sz1_new
+	Sz2_old = Sz2_new
+
+	k1 = vecn(-k/2d0,k/2d0,k_num)
+	Phi = 0
+	do l=1,order
+		do m=1,order
+			do knum=1,k_num
+			Phi = 0	
+				Jk = J*(2*cos(k1(knum)*a)) !This line must be modified	when go to general
+				P(1,1) = -J0*Sz2_old
+				P(1,2) = Jk*Sz1_old
+				P(2,1) = Jk*Sz2_old
+				P(2,2) = -J0*Sz1_old
+			!	write(*,*) P
+			
+				call zgeev('V','V',order,P,order,Eigenvalue,VL,order,VR,order,WORK,LWORK,RWORK,INFO)
+				if (info /= 0 ) then 
+					write(*,*) 'zgeev error',info
+					stop
+				end if
+		!		write(*,*) sqrt(J0**2-Jk**2)*Sz1
+!				write(*,*) Eigenvalue
+			!	if (abs(Eigenvalue(1)+Eigenvalue(2))>0.1) then
+		!			stop
+			!	endif
+			!	stop
+				inv = inverse(VR,2)
+		!		write(*,*) matmul(inv,VR)
+				Phi(l)=Phi(l) + 2*VR(l,m)*inv(m,l)/(exp(beta*Eigenvalue(m))-1) 
+	!			write(*,*) VR(l,m)*inv(m,l)/(exp(beta*Eigenvalue(m))-1)
+			!	write(*,*)'Phi',Phi
+			end do
+		end do
+		Phi(l) = Phi(l)/k_num
+	write(*,*) 'phi',Phi
+!	write(*,*) Sz1_new,Sz2_new
+		
+	end do
+!	write(*,*) Phi
+	Sz1_new = 1/(2*(2*Phi(1)+1))
+	Sz2_new = 1/(2*(2*Phi(2)+1))
+
+	write(*,*) Sz1_new,Sz2_new
+	end do
+
+end subroutine
+
+subroutine spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
+	use array
+	use constants
+	implicit none
+
+	!----input and output-------
+	real(8),intent(in) :: Sz1_init,Sz2_init
+	real(8),intent(out) :: Sz1_new,Sz2_new
+
+	!----local vars----------
+	integer,parameter :: k_num=300
+	real(8) :: k1(k_num),Phi(2)
+	integer :: knum,l,m
+
+	real(8) :: Sz1_old,Sz2_old,Jk,J0
+	J0 = z*j
+	Sz1_new = Sz1_init
+	Sz2_new = Sz2_init
+	
+
+!	do while(abs(Sz1_old-Sz1_new)>0.001 .or. abs(Sz2_old-Sz2_new)>0,001)
+	do  while(abs(Sz1_old-Sz1_new)>0.0001 .or. abs(Sz2_old-Sz2_new)>0.0001)
+
+	Sz1_old = Sz1_new
+	Sz2_old = Sz2_new
+
+	k1 = vecn(-k/2d0,k/2d0,k_num)
+	Phi = 0
+	do l = 1,2
+		do knum = 1,k_num
+			Jk=2*J*cos(k1(knum)*a)
+			Phi(l) = Phi(l) + 1/sqrt(1-Jk**2/J0**2)/tanh(beta*sqrt(J0**2-Jk**2)/2)
+		end do
+	end do
+	Sz1_new = 1/(2*Phi(1))
+	Sz2_new = 1/(2*Phi(2))
+!	write(*,*) Phi
+
+	end do
+
+	write(*,*) Sz1_new,Sz2_new
+end subroutine spin
