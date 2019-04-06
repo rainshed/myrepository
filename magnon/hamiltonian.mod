@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from energyband.f90
-MD5:97248624d9bb705ffeeeff93b29d3901 -- If you edit this, you'll get what you deserve.
+MD5:9fe03e845b6339a300f39355b47ad42d -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -23,29 +23,29 @@ UNKNOWN UNKNOWN 0 0 FUNCTION) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 3 ()
 4 'constants' 'constants' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-5 'diag' 'hamitonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+5 'diag' 'hamiltonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 DIMENSION FUNCTION ALWAYS_EXPLICIT) (COMPLEX 8 0 0 0 COMPLEX
 ()) 6 0 (7) (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1')
 (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '12')) 8 () () () 0 0)
-9 'ham' 'hamitonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+9 'ham' 'hamiltonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 DIMENSION FUNCTION ALWAYS_EXPLICIT) (COMPLEX 8 0 0 0 COMPLEX
 ()) 10 0 (11 12 13) (2 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ())
 0 '1') (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '12') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 0 INTEGER ())
 0 '12')) 14 () () () 0 0)
-15 'hamitonian' 'hamitonian' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+15 'hamiltonian' 'hamiltonian' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-16 'high_sym_line' 'hamitonian' '' 1 ((PROCEDURE UNKNOWN-INTENT
+16 'high_sym_line' 'hamiltonian' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 17
 0 (18 19) () 0 () () () 0 0)
-20 'hn' 'hamitonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+20 'hn' 'hamiltonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 DIMENSION FUNCTION ALWAYS_EXPLICIT) (COMPLEX 8 0 0 0 COMPLEX
 ()) 21 0 (22 23 24) (2 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ())
 0 '1') (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '12') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 0 INTEGER ())
 0 '12')) 25 () () () 0 0)
-26 'hnn' 'hamitonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+26 'hnn' 'hamiltonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 DIMENSION FUNCTION ALWAYS_EXPLICIT) (COMPLEX 8 0 0 0 COMPLEX
 ()) 27 0 (28 29 30) (2 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ())
 0 '1') (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '12') (CONSTANT (
@@ -64,7 +64,7 @@ REAL ()) 0 '0.224dd2f1a9fbe8@0') () 0 () () () 0 0)
 35 'pi' 'constants' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () (CONSTANT (REAL 8 0 0 0
 REAL ()) 0 '0.3243f6a8885a30@1') () 0 () () () 0 0)
-36 'sort' 'hamitonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+36 'sort' 'hamiltonian' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 37 0 (38 39) () 0 ()
 () () 0 0)
 7 'h' '' '' 6 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
@@ -127,5 +127,5 @@ DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 )
 
 ('acos' 0 2 'complex' 0 3 'constants' 0 4 'diag' 0 5 'ham' 0 9
-'hamitonian' 0 15 'high_sym_line' 0 16 'hn' 0 20 'hnn' 0 26 'ima' 0 32
+'hamiltonian' 0 15 'high_sym_line' 0 16 'hn' 0 20 'hnn' 0 26 'ima' 0 32
 'j1' 0 33 'j2' 0 34 'pi' 0 35 'sort' 0 36)

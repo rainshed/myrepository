@@ -6,70 +6,46 @@ module constants
 	complex(8),parameter :: ima = complex(0,1d0)
 end module
 
-module Hamitonian
+module Hamiltonian
 	use constants
 	implicit none
 	contains
 	
-	!-----Hamitonian of nest neighbor-----------------
+	!-----Hamiltonian of nest neighbor-----------------
 	function Hn(ka,kb,kc) result(Ham_n)
 		implicit none
 		real(8) :: ka,kb,kc
 		complex(8) :: Ham_n(12,12) 
 		integer :: i,j
 		Ham_n = 0
-!		Ham_n(1,9) = J1*exp(-ima*(ka+kb))
-!		Ham_n(1,10) = J1
-!		Ham_n(1,11) = J1*exp(ima*kc)
-!		Ham_n(1,12) = J1
-!		Ham_n(2,9) = J1
-!		Ham_n(2,10) = J1
-!		Ham_n(2,11) = J1
-!		Ham_n(2,12) = J1*exp(ima*ka) 
-!		Ham_n(3,7) = J1*exp(-ima*(ka+kb))
-!		Ham_n(3,8) = J1
-!		Ham_n(3,11) = J1
-!		Ham_n(3,12) = J1
-!		Ham_n(4,7) = J1
-!		Ham_n(4,8) = J1
-!		Ham_n(4,11) = J1*exp(ima*kb)
-!		Ham_n(4,12) = J1*exp(-ima*kc)
-!		Ham_n(5,7) = J1*(ima*kc)
-!		Ham_n(5,8) = J1
-!		Ham_n(5,9) = J1
-!		Ham_n(5,10) = J1*(ima*kb)
-!		Ham_n(6,7) = J1
-!		Ham_n(6,8) = J1*(ima*ka)
-!		Ham_n(6,9) = J1
-!		Ham_n(6,10) = J1*(-ima*kc)
-!		
-!		do i = 7,12
-!			do j = 1,6
-!			Ham_n(i,j) = conjg(Ham_n(j,i))
-!			end do
-!		end do
-		Ham_n(1,9) = J1*complex(cos(-(ka+kb)),sin(-(ka+kb)))!J1*exp(-ima*(ka+kb))
+		Ham_n(1,9) = J1*exp(-ima*(ka+kb))
 		Ham_n(1,10) = J1
-		Ham_n(1,11) = J1*complex(cos(kc),sin(kc))!exp(ima*kc)
+		Ham_n(1,11) = J1*exp(ima*kc)
 		Ham_n(1,12) = J1
 		Ham_n(2,9) = J1
 		Ham_n(2,10) = J1
 		Ham_n(2,11) = J1
-		Ham_n(2,12) = J1*complex(cos(ka),sin(ka))!exp(ima*ka)
+		Ham_n(2,12) = J1*exp(ima*ka) 
+		Ham_n(3,7) = J1*exp(-ima*(ka+kb))
+		Ham_n(3,8) = J1
 		Ham_n(3,11) = J1
 		Ham_n(3,12) = J1
-		Ham_n(4,11) = J1*complex(cos(kb),sin(kb))!exp(ima*kb)
-		Ham_n(4,12) = J1*complex(cos(-kc),sin(-kc))!exp(-ima*kc)
-
-		do i = 1,5
-			do j = i+7,12
-				Ham_n(j-6,i+6) = Ham_n(i,j)
-			end do
-		end do
-
-		do i = 1,6
-			do j = 7,12
-				Ham_n(j,i) = conjg(Ham_n(i,j))
+		Ham_n(4,7) = J1
+		Ham_n(4,8) = J1
+		Ham_n(4,11) = J1*exp(ima*kb)
+		Ham_n(4,12) = J1*exp(-ima*kc)
+		Ham_n(5,7) = J1*exp(ima*kc)
+		Ham_n(5,8) = J1
+		Ham_n(5,9) = J1
+		Ham_n(5,10) = J1*exp(ima*kb)
+		Ham_n(6,7) = J1
+		Ham_n(6,8) = J1*exp(ima*ka)
+		Ham_n(6,9) = J1
+		Ham_n(6,10) = J1*exp(-ima*kc)
+		
+		do i = 7,12
+			do j = 1,6
+			Ham_n(i,j) = conjg(Ham_n(j,i))
 			end do
 		end do
 		
@@ -77,33 +53,25 @@ module Hamitonian
 	!--------------------------------------------------------------------------
 
 
-	!-----Hamitonian of next nearest neighbor---------------------------------------------
+	!-----Hamiltonian of next nearest neighbor---------------------------------------------
 	function Hnn(ka,kb,kc) result(Ham_nn)
 		implicit none
 		real(8) :: ka,kb,kc
 		complex(8) :: Ham_nn(12,12)
 		integer :: i,j
 		Ham_nn = 0
-		Ham_nn(1,3) = J2*complex(cos(kc),sin(kc))!exp(ima*kc)
-		Ham_nn(1,4) = J2*complex(cos(kc),sin(kc))!exp(ima*kc)
-		Ham_nn(1,5) = J2*complex(cos(-1d0*(ka+kb)),sin(-1d0*(ka+kb)))!exp(-ima*(ka+kb))
-		Ham_nn(1,6) = J2*complex(cos(kc),sin(kc))!exp(ima*kc)
-		Ham_nn(2,3) = J2*complex(cos(ka),sin(ka))!exp(ima*ka)
-		Ham_nn(2,4) = J2*complex(cos(-kb),sin(-kb))!exp(-ima*kb)
-		Ham_nn(2,5) = J2*complex(cos(-kb),sin(-kb))!exp(-ima*kb)
+		Ham_nn(1,3) = J2*exp(ima*kc)
+		Ham_nn(1,4) = J2*exp(ima*kc)
+		Ham_nn(1,5) = J2*exp(-ima*(ka+kb))
+		Ham_nn(1,6) = J2*exp(ima*kc)
+		Ham_nn(2,3) = J2*exp(ima*ka)
+		Ham_nn(2,4) = J2*exp(-ima*kb)
+		Ham_nn(2,5) = J2*exp(-ima*kb)
 		Ham_nn(2,6) = J2
-		Ham_nn(3,5) = J2*complex(cos(-(ka+kb+kc)),sin(-(ka+kb+kc)))!exp(-ima*(ka+kb+kc))
-		Ham_nn(3,6) = J2*complex(cos(-ka),sin(-ka))!exp(-ima*ka)
+		Ham_nn(3,5) = J2*exp(-ima*(ka+kb+kc))
+		Ham_nn(3,6) = J2*exp(-ima*ka)
 		Ham_nn(4,5) = J2
 		Ham_nn(4,6) = J2
-
-!		do i = 1,5
-!			do j = i+1,6,1
-!				Ham_nn(j,i) = conjg(Ham_nn(i,j))
-!				Ham_nn(i+6,j+6) = conjg(Ham_nn(i,j))
-!				Ham_nn(j+6,i+6) = conjg(Ham_nn(i+6,j+6))
-!			end do
-!		end do
 
 		do i = 1,6
 			do j = 1,6
@@ -122,7 +90,7 @@ module Hamitonian
 	end function
 	!-------------------------------------------------------
 
-	!----get the whole Hamitonian-------------------
+	!----get the whole Hamiltonian-------------------
 	function Ham(ka,kb,kc) result(H)
 		implicit none
 		real(8) :: ka,kb,kc
@@ -219,7 +187,7 @@ end module
 
 
 program main
-	use Hamitonian
+	use Hamiltonian
 	implicit none
 	integer,parameter :: knum=60
 	real(8) :: E(12)
@@ -243,21 +211,7 @@ program main
 !		write(*,*) E
 		call sort(E,12)
 !		write(*,*) E
-!		stop !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!		stop 
 		write(10,*) i,E(12),E(11),E(10),E(9),E(8),E(7)!,E(6),E(5),E(4),E(3),E(2),E(1)
 	end do 
-     
-	write(*,*) diag(motion)
-	E = diag(Ham(0.5d0,0.5d0,-0.5d0))
-	write(*,*) E
-	test = Ham(pi/2,pi/2,-pi/2)
-	open(unit=11,file='test.txt')
-	do i = 1,12
-		do j = 1,12
-			write(11,*) test(i,j)
-		end do 
-	end do
-	E = dble(diag(matmul(motion,Ham(pi/2,pi/2,-pi/2))))
-	call sort(E,12)
-	write(*,*) E
 end 
