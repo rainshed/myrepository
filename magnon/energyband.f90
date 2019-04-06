@@ -93,30 +93,30 @@ module Hamitonian
 		Ham_nn(2,5) = J2*complex(cos(-kb),sin(-kb))!exp(-ima*kb)
 		Ham_nn(2,6) = J2
 		Ham_nn(3,5) = J2*complex(cos(-(ka+kb+kc)),sin(-(ka+kb+kc)))!exp(-ima*(ka+kb+kc))
-		Ham_nn(3,6) = J2*complex(cos(ka),sin(ka))!exp(-ima*ka)
+		Ham_nn(3,6) = J2*complex(cos(-ka),sin(-ka))!exp(-ima*ka)
 		Ham_nn(4,5) = J2
 		Ham_nn(4,6) = J2
 
-		do i = 1,5
-			do j = i+1,6,1
-				Ham_nn(j,i) = conjg(Ham_nn(i,j))
+!		do i = 1,5
+!			do j = i+1,6,1
+!				Ham_nn(j,i) = conjg(Ham_nn(i,j))
+!				Ham_nn(i+6,j+6) = conjg(Ham_nn(i,j))
+!				Ham_nn(j+6,i+6) = conjg(Ham_nn(i+6,j+6))
+!			end do
+!		end do
+
+		do i = 1,6
+			do j = 1,6
 				Ham_nn(i+6,j+6) = conjg(Ham_nn(i,j))
-				Ham_nn(j+6,i+6) = conjg(Ham_nn(i+6,j+6))
 			end do
 		end do
 
-!		do i = 1,6
-!			do j = 1,6
-!				Ham_nn(i+6,j+6) = conjg(Ham_nn(i,j))
-!			end do
-!		end do
-!
-!		!----Hnn is hermite---------------------
-!		do i = 1,12
-!			do j = i+1,12
-!				Ham_nn(j,i) = conjg(Ham_nn(i,j))
-!			end do
-!		end do
+		!----Hnn is hermite---------------------
+		do i = 1,12
+			do j = i+1,12
+				Ham_nn(j,i) = conjg(Ham_nn(i,j))
+			end do
+		end do
 
 
 	end function
@@ -128,7 +128,7 @@ module Hamitonian
 		real(8) :: ka,kb,kc
 		complex(8) :: H(12,12),A(12,12),B(12,12)
 		integer :: i,j
-		write(*,*) ka,kb,kc!!!!!!!!!!!!!!!!!!!!
+	!	write(*,*) ka,kb,kc!!!!!!!!!!!!!!!!!!!!
 		H = Hn(ka,kb,kc) + Hnn(ka,kb,kc)
 		A = Hn(0d0,0d0,0d0)
 		B = Hnn(0d0,0d0,0d0)
@@ -176,7 +176,7 @@ module Hamitonian
 		complex(8) :: H(12,12)
 
 		!----for zheev-----------
-		integer,parameter :: N = 12, Lwork =24 
+		integer,parameter :: N = 12, Lwork =300 
 		complex(8) :: Work(Lwork),VL(N,N),VR(N,N)
 		real(8) :: Rwork(3*N-2)
 		integer :: info
@@ -238,23 +238,26 @@ program main
 	end do
 
 
-!	do i = 1,knum
-!		E = dble(diag(matmul(motion,Ham(k(i,1),k(i,2),k(i,3)))))
+	do i = 1,knum
+		E = dble(diag(matmul(motion,Ham(k(i,1),k(i,2),k(i,3)))))
 !		write(*,*) E
-!		call sort(E,12)
+		call sort(E,12)
 !		write(*,*) E
 !		stop !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!		write(10,*) i,E(12),E(11),E(10),E(9),E(8),E(7)!,E(6),E(5),E(4),E(3),E(2),E(1)
-!	end do 
-	
-!	write(*,*) diag(motion)
-!	E = diag(Ham(0.5d0,0.5d0,-0.5d0))
-!	write(*,*) E
-	test = Ham(2*pi/3,pi/2,pi/5)
+		write(10,*) i,E(12),E(11),E(10),E(9),E(8),E(7)!,E(6),E(5),E(4),E(3),E(2),E(1)
+	end do 
+     
+	write(*,*) diag(motion)
+	E = diag(Ham(0.5d0,0.5d0,-0.5d0))
+	write(*,*) E
+	test = Ham(pi/2,pi/2,-pi/2)
 	open(unit=11,file='test.txt')
 	do i = 1,12
 		do j = 1,12
 			write(11,*) test(i,j)
 		end do 
 	end do
+	E = dble(diag(matmul(motion,Ham(pi/2,pi/2,-pi/2))))
+	call sort(E,12)
+	write(*,*) E
 end 
