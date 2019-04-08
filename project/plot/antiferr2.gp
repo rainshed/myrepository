@@ -1,6 +1,9 @@
 unset key
 set xlabel "X"
 set ylabel "Y"
-plot "antiferr2.dat" with image
+plot "data/antiferr2.dat" with image
+set term pngcairo
+set output "picture/antiferr2.png"
+replot
 set output
 

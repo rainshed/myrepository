@@ -3,20 +3,21 @@
 !----------------------------------------------------------------------
 module constants
 	implicit none
-	integer,parameter :: dp = selected_real_kind(8)
-	real(dp),parameter :: a=1       !Lattice constant
-	real(dp),parameter :: Sz=1  !anverage z component of spin
-	real(dp),parameter :: S=1   !spin of system
-	real(dp),parameter :: hbar=1    !Plank constant
-	real(dp),parameter :: N=1       !Number of atoms
-	real(dp),parameter :: delta=0.01   !self energy
-	real(dp),parameter :: z=4       !coordination number
-	real(dp),parameter :: E0=0      !energy of ground state
-	real(dp),parameter :: J=1       !exchange constant 
-	real(dp),parameter :: beta = 1  !temperature 
-	real(dp),parameter :: pi=3.1415926        
-	real(dp),parameter :: k = 2d0*pi/a
-	real(dp) :: Sz1,Sz2
+!	integer,parameter :: dp = selected_real_kind(8)
+	real(8),parameter :: a=1       !Lattice constant
+	real(8),parameter :: Sz=1  !anverage z component of spin
+	real(8),parameter :: S=1   !spin of system
+	real(8),parameter :: hbar=1    !Plank constant
+	real(8),parameter :: N=1       !Number of atoms
+	real(8),parameter :: delta=0.01   !self energy
+	real(8),parameter :: z=4       !coordination number
+	real(8),parameter :: E0=0      !energy of ground state
+	real(8),parameter :: J=1       !exchange constant 
+	real(8),parameter :: beta = 1  !temperature 
+	real(8),parameter :: pi=3.1415926        
+	real(8),parameter :: k = 2d0*pi/a
+	real(8),parameter :: Sz1 = 0.5,Sz2=-0.5 
+!	real(8) :: Sz1,Sz2
 	!-----------------------------------------------------------------------
 end module
 !-------------------------------------------------------------------
@@ -25,8 +26,8 @@ end module
 
 
 
-
-
+!some calculation
+!---------------------------------------------------------------------------------
 module calc
 	use constants
 contains
@@ -92,48 +93,55 @@ contains
 
 end module calc
 !------------------------------------------------------------------------------------------------
+
+!main program
+!------------------------------------------------------------------------------------
 program main
 	use constants
 	use array
 	use calc
 	implicit none
-	call calc_spin(-0.4d0,0.4d0,Sz1,Sz2)
+!	call calc_spin(-0.5d0,0.5d0,Sz1,Sz2)
 !	call iteration(0.5d0,-0.5d0,Sz1,Sz2)
 !	write(*,*) Sz1,Sz2
-!	!------------------------------------------------------------------------------------------------
-!	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
-!	real(dp),parameter :: o_max = 8d0, o_min=0d0  !o_max is max value of omega at omega axial
-!	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
-!	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
-!	real(dp) :: k1(k_num),omega(o_num)
-!	real(dp) :: spec1(k_num,o_num),spec2(k_num,o_num)
-!	integer :: knum, onum
-!	!---------------------------------------------------------------------------------------------------
-!	!for spec
-!	complex(8) :: green(2,2),c_omega(o_num)
-!
-!
-!	!------------------------------------------------------------------------------------------------------
-!	k1 = vec(-k/2d0,k/2d0,k_inter)
-!	omega = vec(o_min,o_max,o_inter)
-!	open(unit=10,file='antiferr1.dat')
-!	open(unit=11,file='antiferr2.dat')
-!	do knum = 1,size(k1)
-!		do onum = 1,size(omega)
-!			c_omega(onum) = complex(omega(onum),0)
-!			green = -green_fun(k1(knum),0d0,c_omega(onum))
-!			spec1(knum,onum) = aimag(green(1,1))
-!			spec2(knum,onum) = aimag(green(2,2))
-!			write(10,*) k1(knum),omega(onum),spec1(knum,onum)
-!			write(11,*) k1(knum),omega(onum),spec2(knum,onum)
-!		end do
-!	end do
+	!------------------------------------------------------------------------------------------------
+	real(dp),parameter :: k_inter=0.01,o_inter = 0.01 !k_inter is interval of k, o_inter is interval of omega
+	real(dp),parameter :: o_max = 4d0, o_min=0d0  !o_max is max value of omega at omega axial
+	integer,parameter ::  k_num = int(k/k_inter)+1    !number of k point
+	integer,parameter ::  o_num = int((o_max-o_min)/o_inter)+1  !number of omega point
+	real(dp) :: k1(k_num),omega(o_num)
+	real(dp) :: spec1(k_num,o_num),spec2(k_num,o_num)
+	integer :: knum, onum
+	!---------------------------------------------------------------------------------------------------
+	!for spec
+	complex(8) :: green(2,2),c_omega(o_num)
+
+
+	!------------------------------------------------------------------------------------------------------
+	k1 = vec(-k,k,k_inter)
+	omega = vec(o_min,o_max,o_inter)
+	open(unit=10,file='data/antiferr1.dat')
+	open(unit=11,file='data/antiferr2.dat')
+	do knum = 1,size(k1)
+		do onum = 1,size(omega)
+			c_omega(onum) = complex(omega(onum),0)
+			green = -green_fun(k1(knum),0d0,c_omega(onum))
+			spec1(knum,onum) = aimag(green(1,1))
+			spec2(knum,onum) = aimag(green(2,2))
+			write(10,*) k1(knum),omega(onum),spec1(knum,onum)
+			write(11,*) k1(knum),omega(onum),spec2(knum,onum)
+		end do
+	end do
 
 !	use calc
 !	complex(8) :: test(2,2) 
 !	test = green_fun(1d0,1d0,(1d0,0d0))
+!	write(*,*) test
 
 end             
+!--------------------------------------------------------------------------------------
+
+
 
 subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 	use array
@@ -171,6 +179,7 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 
 		Sz1_old = Sz1_new
 		Sz2_old = Sz2_new
+
 		
 		Phi = 0
 		do l = 1,2
@@ -182,15 +191,15 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 				!write(*,*) k1(k_num) 
 				!write(*,*) cos(k1(knum)*a) 
 				!write(*,*) Jk
-				P(1,1) = complex(J0*Sz1_old,0)
+				P(1,1) = complex(-J0*Sz2_old,0)
 				P(1,2) = complex(Jk*Sz1_old,0)
-				P(2,1) = complex(-Jk*Sz1_old,0)
+				P(2,1) = complex(Jk*Sz2_old,0)
 				P(2,2) = complex(-J0*Sz1_old,0)
 				!write(*,*) P
 
 				call zgeev('V','V',order,P,order,Eigenvalue,VL,order,VR,order,WORK,LWORK,RWORK,INFO)
 				!VR is eigenvector matrix,VL is the inverse of VR
-			!	write(*,*) Eigenvalue
+				
 				if (info .ne. 0) then
 					write(*,*) 'dgeev error'
 				end if
@@ -200,8 +209,7 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 				inv = inverse(VR,2)
 
 				Phi(l) = Phi(l)+2*VR(l,m)*inv(m,l)/(exp(beta*Eigenvalue(m))-1)	
-				write(*,*)VR(l,m)*inv(m,l)/(exp(beta*Eigenvalue(m))-1)
-			!	write(*,*) Phi(l)
+			!	write(*,*)VR(l,m)*inv(m,l)/(exp(beta*Eigenvalue(m))-1)
 			!	write(*,*) exp(beta*Eigenvalue(m))-1
 				!write(*,*) (exp(beta*Eigenvalue(m))-1)
 				end do
@@ -212,6 +220,12 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 			Phi(l) = Phi(l)/k_num
 	!		write(*,*) Phi(l)
 		end do
+
+
+		stop !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
 		write(*,*) Phi(1)+Phi(2)
 		Sz1_new = 1/(2*(2*Phi(1)+1))
 		Sz2_new = 1/(2*(2*Phi(2)+1))
@@ -220,7 +234,8 @@ subroutine iteration(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 		
 	end do
 end subroutine	
-	
+!debug	
+!-----------------------------------------------------------------------------
 subroutine calc_spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 	use array
 	use constants
@@ -255,6 +270,7 @@ subroutine calc_spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 
 	do  while(abs(Sz1_old-Sz1_new)>0.0001 .or. abs(Sz2_old-Sz2_new)>0.0001)
 
+		open(unit=20,file='aaa')
 	Sz1_old = Sz1_new
 	Sz2_old = Sz2_new
 
@@ -276,6 +292,8 @@ subroutine calc_spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 					write(*,*) 'zgeev error',info
 					stop
 				end if
+				write(*,*) Eigenvalue
+				write(20,*) k1(knum),real(eigenvalue(1)),real(eigenvalue(2)) 
 		!		write(*,*) sqrt(J0**2-Jk**2)*Sz1
 !				write(*,*) Eigenvalue
 			!	if (abs(Eigenvalue(1)+Eigenvalue(2))>0.1) then
@@ -290,7 +308,7 @@ subroutine calc_spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 			end do
 		end do
 		Phi(l) = Phi(l)/k_num
-	write(*,*) 'phi',Phi
+!	write(*,*) 'phi',Phi
 !	write(*,*) Sz1_new,Sz2_new
 		
 	end do
@@ -298,10 +316,20 @@ subroutine calc_spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 	Sz1_new = 1/(2*(2*Phi(1)+1))
 	Sz2_new = 1/(2*(2*Phi(2)+1))
 
-	write(*,*) Sz1_new,Sz2_new
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	stop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+!	write(*,*) Sz1_new,Sz2_new
 	end do
 
 end subroutine
+!------------------------------------------------------------------------------
 
 subroutine spin(Sz1_init,Sz2_init,Sz1_new,Sz2_new)
 	use array
